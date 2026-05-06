@@ -12,12 +12,17 @@ import { ArrowDown } from "lucide-react";
 // All clips are warm, residential, daylight — no NYE party hats, no traffic.
 // Each clip auto-advances to the next with a 1s opacity crossfade.
 // Replace any clip by overwriting the corresponding file in /public/hero/.
+// -----------------------------------------------------------------------------
+// `basePath` is auto-applied to raw <video src=...> attributes (Next.js does
+// NOT auto-prefix these like it does for next/image and next/link). Without
+// this prefix, videos 404 on GitHub Pages and the poster shows instead.
 // =============================================================================
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const HERO_CLIPS = [
-  "/hero/01-home.mp4",     // aerial of a lakeside home, autumn warm tones
-  "/hero/02-backyard.mp4", // sunlit backyard / pool — life around the home
-  "/hero/03-couple.mp4",   // couple hugging on a sunny bench overlooking the city
-  "/hero/04-toast.mp4",    // outdoor daytime champagne pour & cheers
+  `${BASE_PATH}/hero/01-home.mp4`,     // aerial of a lakeside home, autumn warm tones
+  `${BASE_PATH}/hero/02-backyard.mp4`, // sunlit backyard / pool — life around the home
+  `${BASE_PATH}/hero/03-couple.mp4`,   // couple at home — warm sunlit interior
+  `${BASE_PATH}/hero/04-toast.mp4`,    // outdoor daytime champagne pour & cheers
 ];
 // Max seconds per clip before crossfading to the next (clips are trimmed live).
 const CLIP_SECONDS = 5;
