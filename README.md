@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prestige Florida Homes Realty — Website
 
-## Getting Started
+A high-end, motion-rich Next.js site for Luis Matos and the Prestige team.
+Builds as a fully static site, ready to deploy to GitHub Pages.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router (static export) + TypeScript + Turbopack
+- Tailwind CSS v4 (CSS-first `@theme` tokens)
+- Framer Motion (cinematic hero, parallax, scroll reveals, 3D-tilt cards, sticky journey)
+- Cinzel + Josefin Sans (Google Fonts) — luxury real estate pairing
+- Lucide icons + custom inline SVG (animated blueprint house, social glyphs)
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Editing content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| What | File |
+|------|------|
+| Listings (add / remove / edit) | `src/data/listings.ts` |
+| Team members + photos | `src/data/team.ts` |
+| Hero copy + headline | `src/components/CinematicHero.tsx` |
+| Hero video clips | `public/hero/01-home.mp4` … `04-toast.mp4` |
+| Hero clip duration | `CLIP_SECONDS` constant in `CinematicHero.tsx` |
+| About copy + stats | `src/components/About.tsx` |
+| Contact info / address | `src/components/ContactSection.tsx` + `src/components/Footer.tsx` |
 
-## Learn More
+To use real photos instead of Unsplash placeholders, drop them into
+`public/team/jane.jpg` (etc.) and reference like `image: "/team/jane.jpg"`.
 
-To learn more about Next.js, take a look at the following resources:
+## Contact form → Google Sheets
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The form posts directly from the browser to a Google Apps Script Web App,
+which appends a row to your Sheet. No server required (works on GitHub Pages).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### One-time setup
 
-## Deploy on Vercel
+1. **Create a Google Sheet** with headers in row 1:
+   `Timestamp | First Name | Last Name | Email | Phone | Interest | Message`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Open Apps Script:** Sheet → Extensions → Apps Script. Paste:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```js
+   function doPost(e) {
+     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+     const data = JSON.parse(e.postData.contents);
+     sheet.appendRow([
+       data.timestamp,
+       data.firstName,
+       data.lastName,
+       data.email,
+       data.phone,
+       data.interest,
+       data.message,
+     ]);
+     return ContentService
+       .createTextOutput(JSON.stringify({ ok: true }))
+       .setMimeType(ContentService.MimeType.JSON);
+   }
+   ```
+
+3. **Deploy:** Deploy → New deployment → Type: Web app
+   - Execute as: **Me**
+   - Who has access: **Anyone**
+   - Click **Deploy** → copy the **Web App URL**.
+
+4. **Wire it in.**
+   - **Local dev:** create `.env.local`:
+     ```
+     NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
+     ```
+   - **GitHub Pages:** add a repo secret named `GOOGLE_SHEETS_WEBHOOK_URL`
+     (Settings → Secrets and variables → Actions → New repository secret).
+     The workflow reads it at build time.
+
+> Without the URL set, form submits succeed silently (logged to console)
+> so the site still functions — useful while you're getting set up.
+
+## Deploy to GitHub Pages
+
+The repo includes `.github/workflows/deploy.yml`. **First-time setup:**
+
+1. **Push to GitHub** (any repo name; the workflow reads the slug automatically).
+2. **Enable Pages:** Settings → Pages → Source: **GitHub Actions**.
+3. *(optional)* **Add the Sheets secret:** Settings → Secrets and variables →
+   Actions → New repository secret →
+   Name `GOOGLE_SHEETS_WEBHOOK_URL`, value = your Apps Script URL.
+4. The workflow runs on every push to `main`. Site lives at
+   `https://<username>.github.io/<repo>/`.
+
+### Build locally to verify
+
+```bash
+NEXT_PUBLIC_BASE_PATH="" npm run build   # for root domain
+# OR
+NEXT_PUBLIC_BASE_PATH="/prestige-homes" npm run build   # match your repo slug
+```
+
+Output is in `./out/` — open `out/index.html` to preview the static build.
+
+## Pages
+
+- `/` — Home (cinematic video hero, marquee, about, 3D-tilt listings, sticky journey, team, contact)
+- `/listings` — Filterable listings grid (status, price, beds, search)
