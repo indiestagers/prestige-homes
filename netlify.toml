@@ -1,0 +1,31 @@
+# Netlify build configuration for Prestige Florida Homes Realty
+# Static-export Next.js → published from /out
+
+[build]
+  command   = "npm run build"
+  publish   = "out"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # On Netlify the site lives at the root of its domain, so basePath stays empty.
+  # (Overrides leftover GitHub Pages env if it got picked up from anywhere.)
+  NEXT_PUBLIC_BASE_PATH = ""
+
+# SPA-style fallback for client-side routes — though we have only / and /listings,
+# this prevents 404 if someone deep-links to a hash-based path.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+  force  = false
+
+# Long-cache static assets (Next.js fingerprints them, so safe forever)
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/hero/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
