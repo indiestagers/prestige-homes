@@ -41,9 +41,8 @@ jobs:
         env:
           # Sets basePath/assetPrefix so links work at /<repo>/ on Pages.
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
-          # Optional repo secret — wire your Google Apps Script Web App URL here
-          # to make the contact form post directly to your Sheet.
-          NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL: ${{ secrets.GOOGLE_SHEETS_WEBHOOK_URL }}
+          # Google Apps Script Web App URL for the Prestige lead form.
+          NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL: https://script.google.com/macros/s/AKfycbyuVwnThzcHaqj3aJwplelU1JPL6HqTst4_F3P_AtT3Nkj3GaTcMswspXrGXBUVfHvToA/exec
         run: npm run build
 
       - name: Upload artifact
