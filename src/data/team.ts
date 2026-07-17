@@ -7,38 +7,31 @@ export type TeamMember = {
   phone?: string;
 };
 
-// IMPORTANT: Replace placeholder team members (2–4) with real team
-// names, photos, and bios before launch. Place real photos in `public/team/`
-// and reference like `/team/jane.jpg`.
 export const team: TeamMember[] = [
   {
     name: "Luis Matos",
-    role: "Broker / Owner",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=85",
-    bio: "Luis founded Prestige Florida Homes Realty to deliver concierge-level service to buyers and sellers across the North Port and greater Sarasota area.",
+    role: "Broker/Owner",
+    image: "/team/luis-matos.jpg",
+    bio: "Luis founded Prestige Florida Homes Realty to bring concierge-level service to buyers and sellers across North Port and greater Florida. Built on discretion, integrity, and an unwavering standard of excellence, the firm reflects his belief that true luxury lives in the details.",
     email: "luismatosthebroker@gmail.com",
     phone: "913-201-3242",
   },
   {
-    name: "Team Member Two",
-    role: "Senior Realtor",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=85",
-    bio: "Replace with real bio. Specialty in waterfront and luxury single-family homes.",
+    name: "Janice Santiago",
+    role: "Director of Business Operations",
+    image: "/team/janice-santiago.jpg",
+    bio: "The quiet force behind the firm's seamless client experience. A bachelor's in Business Administration, paired with a distinguished record in leadership and community service, lends rare poise to her work. Discerning, meticulous, and devoted to excellence, she ensures every detail and every interaction reflects the refined standard our clientele expect.",
   },
   {
-    name: "Team Member Three",
-    role: "Buyer Specialist",
-    image:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=85",
-    bio: "Replace with real bio. Helps first-time and relocation buyers find their fit.",
+    name: "Lisa Alvarez",
+    role: "Licensed Realtor®",
+    image: "/team/lisa-alvarez.jpg",
+    bio: 'Based in Ocala, the "Horse Capital of the World," Lisa offers concierge service from the Gulf Coast through Florida\'s equestrian heartland. She serves discerning families, seasonal residents, and equestrian professionals who expect a home as refined as their lifestyle.',
   },
   {
-    name: "Team Member Four",
-    role: "Listing Specialist",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=85",
-    bio: "Replace with real bio. Markets sellers' homes with professional photography and strategy.",
+    name: "Rodrigo Pulido",
+    role: "Licensed Realtor®",
+    image: "/team/rodrigo-pulido.jpg",
+    bio: "Rodrigo Pulido is a licensed Realtor® serving distinguished clients across Florida, Kansas, and Missouri. Built on discretion, integrity, and bespoke solutions, his practice guides buyers, investors, and families through every acquisition, sale, or relocation with quiet confidence.",
   },
 ];

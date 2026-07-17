@@ -43,8 +43,8 @@ export default function ContactSection() {
             <li className="flex items-start gap-4">
               <MapPin size={18} className="text-gold mt-0.5 shrink-0" />
               <span>
-                1121 W Price Blvd #1146<br />
-                North Port, FL 34288
+                2375 Bennett Lane<br />
+                Northport, FL 34288
               </span>
             </li>
           </ul>

@@ -2,8 +2,9 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { listings, type Listing } from "@/data/listings";
-import { Bed, Bath, Maximize2 } from "lucide-react";
+import { usePrestigeListings } from "@/lib/usePrestigeListings";
+import { goToContactSection } from "@/lib/contactNavigation";
+import { Bed, Bath, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const fmt = (n: number) =>
   new Intl.NumberFormat("en-US", {
@@ -29,6 +30,7 @@ const PRICES = [
 const BEDS = ["any", "1+", "2+", "3+", "4+"] as const;
 
 export default function ListingsPage() {
+  const { listings } = usePrestigeListings();
   const [status, setStatus] = useState<string>("all");
   const [price, setPrice] = useState<string>("all");
   const [beds, setBeds] = useState<string>("any");
@@ -37,7 +39,7 @@ export default function ListingsPage() {
   const filtered = useMemo(() => {
     const p = PRICES.find((x) => x.id === price)!;
     const minBeds = beds === "any" ? 0 : parseInt(beds, 10);
-    const q = query.toLowerCase();
+    const q = query.trim().toLowerCase();
     return listings.filter(
       (l) =>
         (status === "all" || l.status === status) &&
@@ -45,11 +47,11 @@ export default function ListingsPage() {
         l.price <= p.max &&
         l.beds >= minBeds &&
         (!q ||
-          (l.title + " " + l.address + " " + l.city)
+          (l.title + " " + l.address + " " + l.city + " " + l.state)
             .toLowerCase()
             .includes(q)),
     );
-  }, [status, price, beds, query]);
+  }, [listings, status, price, beds, query]);
 
   return (
     <>
@@ -180,22 +182,90 @@ function Chip({
   );
 }
 
-function Card({ l, i }: { l: Listing; i: number }) {
+function ListingGallery({ images, title }: { images: string[]; title: string }) {
+  const [index, setIndex] = useState(0);
+  const hasMultiple = images.length > 1;
+  const active = images[index] || images[0];
+
+  if (!active) return <div className="absolute inset-0 bg-cream" />;
+
+  function step(event: React.MouseEvent, delta: number) {
+    event.preventDefault();
+    event.stopPropagation();
+    setIndex((current) => (current + delta + images.length) % images.length);
+  }
+
+  return (
+    <>
+      <Image
+        src={active}
+        alt={title}
+        fill
+        sizes="(max-width:768px) 100vw, 33vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      {hasMultiple && (
+        <>
+          <button
+            aria-label="Previous listing photo"
+            type="button"
+            onClick={(e) => step(e, -1)}
+            className="absolute left-4 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-ivory/90 text-ink shadow-xl backdrop-blur transition-colors hover:bg-gold"
+          >
+            <ChevronLeft size={19} />
+          </button>
+          <button
+            aria-label="Next listing photo"
+            type="button"
+            onClick={(e) => step(e, 1)}
+            className="absolute right-4 top-1/2 z-20 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-ivory/90 text-ink shadow-xl backdrop-blur transition-colors hover:bg-gold"
+          >
+            <ChevronRight size={19} />
+          </button>
+          <div className="absolute bottom-4 left-4 flex gap-1.5">
+            {images.slice(0, 6).map((image, i) => (
+              <span
+                key={`${image}-${i}`}
+                className={`h-1.5 w-5 rounded-full ${index === i ? "bg-gold" : "bg-ivory/70"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+function Card({
+  l,
+  i,
+}: {
+  l: { id: string; title: string; address: string; city: string; state: string; price: number; beds: number; baths: number; sqft: number; status: string; image: string; gallery: string[] };
+  i: number;
+}) {
+  const images = useMemo(
+    () => Array.from(new Set([l.image, ...(l.gallery || [])].filter(Boolean))),
+    [l.image, l.gallery],
+  );
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: Math.min(i, 8) * 0.04 }}
-      className="group cursor-pointer"
+      className="group relative cursor-pointer"
+      role="link"
+      tabIndex={0}
+      onClick={goToContactSection}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          goToContactSection();
+        }
+      }}
     >
       <div className="relative aspect-[4/5] overflow-hidden mb-5 bg-cream">
-        <Image
-          src={l.image}
-          alt={l.title}
-          fill
-          sizes="(max-width:768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        <ListingGallery images={images} title={l.title} />
         <div className="absolute top-4 left-4 px-3 py-1.5 bg-ivory/95 backdrop-blur font-body text-[10px] tracking-[0.2em] uppercase text-ink">
           {l.status === "for-sale"
             ? "For Sale"
@@ -208,9 +278,11 @@ function Card({ l, i }: { l: Listing; i: number }) {
         </div>
       </div>
       <h3 className="font-display text-xl sm:text-2xl tracking-tight">
-        {l.title}
+        <span className="transition-colors duration-300 group-hover:text-gold">
+          {l.title}
+        </span>
       </h3>
-      <p className="font-body text-sm text-stone mt-1">
+      <p className="font-body text-base text-stone mt-1">
         {l.address}, {l.city}, {l.state}
       </p>
       <div className="flex gap-5 mt-4 text-stone font-body text-sm">

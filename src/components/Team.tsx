@@ -31,24 +31,24 @@ export default function Team() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
-              className="group"
+              className="team-card group"
             >
-              <div className="relative aspect-[3/4] overflow-hidden mb-5 bg-ink-soft">
+              <div className="relative aspect-[3/4] overflow-hidden mb-6 bg-ink-soft">
                 <Image
                   src={m.image}
                   alt={m.name}
                   fill
-                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  className="team-photo object-cover transition-all duration-700"
                   sizes="(max-width:768px) 50vw, 25vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500" />
               </div>
-              <h3 className="font-display text-xl tracking-tight">{m.name}</h3>
-              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-gold mt-1">
+              <h3 className="font-display text-2xl tracking-tight">{m.name}</h3>
+              <p className="font-body text-xs tracking-[0.18em] uppercase text-gold mt-2">
                 {m.role}
               </p>
               {m.bio && (
-                <p className="font-body text-sm text-ivory/65 mt-3 leading-relaxed line-clamp-3">
+                <p className="font-body text-base text-ivory/70 mt-4 leading-relaxed">
                   {m.bio}
                 </p>
               )}
