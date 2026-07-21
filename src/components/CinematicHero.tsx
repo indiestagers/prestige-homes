@@ -102,12 +102,12 @@ export default function CinematicHero() {
           className="flex items-center gap-3 mb-8"
         >
           <span className="w-10 h-px bg-gold" />
-          <span className="font-body text-[11px] tracking-[0.4em] text-gold uppercase">
+          <span className="font-body text-sm sm:text-base font-bold tracking-[0.34em] text-gold uppercase">
             Prestige Florida Homes Realty
           </span>
         </motion.div>
 
-        <h1 className="font-display leading-[0.92] tracking-[-0.02em] text-[clamp(3rem,8.5vw,7.5rem)] font-medium mb-8 max-w-5xl">
+        <h1 className="font-display leading-[0.92] tracking-[-0.02em] text-[clamp(3rem,8.5vw,7.5rem)] font-medium mb-8 max-w-5xl select-none caret-transparent outline-none">
           <SplitReveal text="Where Florida" delay={0.5} />
           <br />
           <SplitReveal text="Feels Like Home." delay={0.85} highlightLast />
