@@ -300,7 +300,7 @@ export default function AdminListingsManager() {
                   key={listing.id}
                 >
                   <div className="relative aspect-[1.35] overflow-hidden bg-cream">
-                    <Image src={listing.image} alt={listing.title} fill className="object-cover" />
+                    <Image src={listing.image} alt={listing.title} fill className="object-contain" />
                   </div>
                   <div>
                     <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
@@ -403,7 +403,7 @@ export default function AdminListingsManager() {
                           type="button"
                           onClick={() => updateDraft("image", image)}
                         >
-                          <Image src={image} alt="" fill className="object-cover" />
+                          <Image src={image} alt="" fill className="object-contain" />
                         </button>
                       ))}
                   </div>
