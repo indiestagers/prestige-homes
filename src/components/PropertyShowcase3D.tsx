@@ -102,7 +102,7 @@ export default function PropertyShowcase3D() {
         >
           {items.map((l, i) => (
             <TiltCard key={l.id} index={i} onActivate={goToContactSection}>
-              <div className="relative aspect-[4/5] overflow-hidden mb-5 bg-ink/5 rounded-sm">
+              <div className="relative aspect-[4/3] overflow-hidden mb-5 bg-ink/5 rounded-sm">
                 <Image
                   src={l.image}
                   alt={l.title}

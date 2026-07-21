@@ -396,7 +396,7 @@ export default function AdminListingsManager() {
                       .slice(0, 8)
                       .map((image, index) => (
                         <button
-                          className={`relative aspect-square overflow-hidden border ${
+                          className={`relative aspect-[4/3] overflow-hidden border ${
                             draft.image === image ? "border-gold" : "border-transparent"
                           }`}
                           key={`${image}-${index}`}
