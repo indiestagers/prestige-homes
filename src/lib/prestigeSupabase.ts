@@ -89,22 +89,26 @@ async function compressListingImage(file: File): Promise<File> {
       image.src = objectUrl;
     });
 
+    // Downscale only if oversized — never crop. Preserves the photo's real
+    // composition instead of forcing every upload into a fixed rectangle.
+    const maxDimension = 1920;
+    const scale = Math.min(
+      1,
+      maxDimension / Math.max(img.naturalWidth, img.naturalHeight),
+    );
+    const targetWidth = Math.round(img.naturalWidth * scale);
+    const targetHeight = Math.round(img.naturalHeight * scale);
+
     const canvas = document.createElement("canvas");
-    canvas.width = 1200;
-    canvas.height = 1500;
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
     const ctx = canvas.getContext("2d");
     if (!ctx) return file;
 
-    const ratio = img.naturalWidth / img.naturalHeight;
-    const cropWidth = ratio > 0.8 ? 0.8 * img.naturalHeight : img.naturalWidth;
-    const cropHeight = ratio > 0.8 ? img.naturalHeight : img.naturalWidth / 0.8;
-    const cropX = (img.naturalWidth - cropWidth) / 2;
-    const cropY = (img.naturalHeight - cropHeight) / 2;
-
-    ctx.drawImage(img, cropX, cropY, cropWidth, cropHeight, 0, 0, 1200, 1500);
+    ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
     const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, "image/jpeg", 0.86),
+      canvas.toBlob(resolve, "image/jpeg", 0.9),
     );
     if (!blob) return file;
 

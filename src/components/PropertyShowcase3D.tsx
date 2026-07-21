@@ -101,15 +101,14 @@ export default function PropertyShowcase3D() {
         >
           {items.map((l, i) => (
             <TiltCard key={l.id} index={i} onActivate={goToContactSection}>
-              <div className="relative aspect-[4/3] overflow-hidden mb-5 bg-ink/5 rounded-sm">
-                {/* Fixed landscape box + object-contain: every card stays
-                    landscape-shaped, and the full photo always shows (a
-                    portrait source photo gets thin side bars instead of
-                    being cropped or forcing the card to go tall). */}
+              <div className="relative overflow-hidden mb-5 bg-ink/5 rounded-sm">
+                {/* Natural height: the card scales to the photo's real
+                    aspect ratio so the full image always shows, full
+                    width, with zero cropping and zero letterbox bars. */}
                 <img
                   src={l.image}
                   alt={l.title}
-                  className="absolute inset-0 h-full w-full object-contain"
+                  className="block w-full h-auto"
                   style={{ transform: "translateZ(20px)" }}
                 />
                 <div
