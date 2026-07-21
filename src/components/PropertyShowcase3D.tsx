@@ -96,7 +96,7 @@ export default function PropertyShowcase3D() {
           </Link>
         </div>
         <div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-start"
           style={{ perspective: "1500px" }}
         >
           {items.map((l, i) => (
