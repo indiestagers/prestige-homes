@@ -16,6 +16,7 @@ import {
   type PrestigeListingDraft,
 } from "@/lib/prestigeSupabase";
 import { usePrestigeListings } from "@/lib/usePrestigeListings";
+import ImageCropFrame from "@/components/ImageCropFrame";
 
 const statuses = [
   { value: "for-sale", label: "For Sale" },
@@ -31,6 +32,7 @@ export default function AdminListingsManager() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [cropQueue, setCropQueue] = useState<File[]>([]);
 
   useEffect(() => {
     if (!prestigeSupabase) return;
@@ -164,45 +166,53 @@ export default function AdminListingsManager() {
     }
   }
 
-  async function uploadImageFiles(files: File[]) {
-    if (files.length === 0) return;
+  // Files wait here until the admin positions each one in the landscape
+  // frame; each confirmed frame is uploaded, then the next file is shown.
+  function queueFilesForCrop(files: File[]) {
+    const images = files.filter((file) => file.type.startsWith("image/"));
+    if (images.length > 0) setCropQueue((current) => [...current, ...images]);
+  }
 
+  async function handleCropComplete(blob: Blob) {
+    const currentFile = cropQueue[0];
     const listingId = ensurePrestigeListingId(draft);
     setBusy(true);
-    setMessage({ type: "loading", text: "Uploading photos..." });
+    setMessage({ type: "loading", text: "Uploading photo..." });
 
     try {
-      const urls: string[] = [];
-      for (const file of files) {
-        urls.push(await uploadPrestigeListingImage(file, listingId));
-      }
+      const baseName =
+        currentFile?.name.replace(/\.[^.]+$/, "") || `photo-${Date.now()}`;
+      const framedFile = new File([blob], `${baseName}.jpg`, { type: "image/jpeg" });
+      const url = await uploadPrestigeListingImage(framedFile, listingId);
 
       setDraft((current) => ({
         ...current,
         id: listingId,
-        image: current.image || urls[0],
-        gallery: Array.from(new Set([...(current.gallery || []), ...urls].filter(Boolean))),
+        image: current.image || url,
+        gallery: Array.from(new Set([...(current.gallery || []), url].filter(Boolean))),
       }));
-      setMessage({ type: "success", text: "Photos uploaded." });
+      setMessage({ type: "success", text: "Photo added." });
     } catch (error) {
       console.warn(error);
-      setMessage({ type: "error", text: "Could not upload those photos." });
+      setMessage({ type: "error", text: "Could not upload that photo." });
     } finally {
       setBusy(false);
+      setCropQueue((current) => current.slice(1));
     }
   }
 
-  async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    await uploadImageFiles(Array.from(event.target.files || []));
+  function handleCropCancel() {
+    setCropQueue((current) => current.slice(1));
+  }
+
+  function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    queueFilesForCrop(Array.from(event.target.files || []));
     event.target.value = "";
   }
 
-  async function handleImageDrop(event: React.DragEvent<HTMLLabelElement>) {
+  function handleImageDrop(event: React.DragEvent<HTMLLabelElement>) {
     event.preventDefault();
-    const files = Array.from(event.dataTransfer.files || []).filter((file) =>
-      file.type.startsWith("image/"),
-    );
-    await uploadImageFiles(files);
+    queueFilesForCrop(Array.from(event.dataTransfer.files || []));
   }
 
   const activeListings = listings.filter((listing) => listing.published !== false);
@@ -483,6 +493,17 @@ export default function AdminListingsManager() {
           </div>
         )}
       </div>
+
+      {cropQueue.length > 0 && (
+        <ImageCropFrame
+          key={cropQueue.length}
+          file={cropQueue[0]}
+          busy={busy}
+          queueLabel={cropQueue.length > 1 ? `${cropQueue.length} left` : undefined}
+          onComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
     </section>
   );
 }
