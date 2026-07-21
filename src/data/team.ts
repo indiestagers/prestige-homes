@@ -34,4 +34,16 @@ export const team: TeamMember[] = [
     image: "/team/rodrigo-pulido.jpg",
     bio: "Rodrigo Pulido is a licensed Realtor® serving distinguished clients across Florida, Kansas, and Missouri. Built on discretion, integrity, and bespoke solutions, his practice guides buyers, investors, and families through every acquisition, sale, or relocation with quiet confidence.",
   },
+  {
+    name: "Josue Garcia",
+    role: "Creative Director",
+    image: "/team/josue-garcia.jpg",
+    bio: "Josue Garcia is the creative eye behind PRESTIGE Florida Homes — the guy turning listings into scroll-stopping content. From cinematic property walkthroughs to social-ready photo and video that actually gets clicks, Josue makes sure every home PRESTIGE represents looks as good online as it does in person.",
+  },
+  {
+    name: "Janiliz Garcia",
+    role: "Architect & Design Lead",
+    image: "/team/janiliz-garcia.jpg",
+    bio: "Janiliz Garcia holds a Master's degree in Architecture and has been part of PRESTIGE Florida Homes since its founding. As the firm's architect and design lead, she works closely with clients to bring their vision to life — blending functional design with the aesthetic that defines every PRESTIGE property. From concept to completion, Janiliz ensures each home reflects both her clients' lifestyle and PRESTIGE's signature standard of quality.",
+  },
 ];
