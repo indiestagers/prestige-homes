@@ -1,7 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { usePrestigeListings } from "@/lib/usePrestigeListings";
 import { goToContactSection } from "@/lib/contactNavigation";
 import { Bed, Bath, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
@@ -197,13 +196,7 @@ function ListingGallery({ images, title }: { images: string[]; title: string }) 
 
   return (
     <>
-      <Image
-        src={active}
-        alt={title}
-        fill
-        sizes="(max-width:768px) 100vw, 33vw"
-        className="object-contain"
-      />
+      <img src={active} alt={title} className="block w-full h-auto" />
       {hasMultiple && (
         <>
           <button
@@ -264,7 +257,7 @@ function Card({
         }
       }}
     >
-      <div className="relative aspect-[4/3] overflow-hidden mb-5 bg-cream">
+      <div className="relative overflow-hidden mb-5 bg-cream">
         <ListingGallery images={images} title={l.title} />
         <div className="absolute top-4 left-4 px-3 py-1.5 bg-ivory/95 backdrop-blur font-body text-[10px] tracking-[0.2em] uppercase text-ink">
           {l.status === "for-sale"

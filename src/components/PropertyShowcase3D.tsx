@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import {
   motion,
@@ -102,13 +101,14 @@ export default function PropertyShowcase3D() {
         >
           {items.map((l, i) => (
             <TiltCard key={l.id} index={i} onActivate={goToContactSection}>
-              <div className="relative aspect-[4/3] overflow-hidden mb-5 bg-ink/5 rounded-sm">
-                <Image
+              <div className="relative overflow-hidden mb-5 bg-ink/5 rounded-sm">
+                {/* Plain <img> (not next/image fill) so the container's
+                    height always follows the real photo's own aspect
+                    ratio instead of cropping/letterboxing to a fixed box. */}
+                <img
                   src={l.image}
                   alt={l.title}
-                  fill
-                  sizes="(max-width:768px) 100vw, 33vw"
-                  className="object-contain"
+                  className="block w-full h-auto"
                   style={{ transform: "translateZ(20px)" }}
                 />
                 <div
