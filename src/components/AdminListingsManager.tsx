@@ -13,16 +13,14 @@ import {
   prestigeSupabase,
   savePrestigeListing,
   uploadPrestigeListingImage,
+  PRESTIGE_STATUSES,
+  prestigeStatusLabel,
   type PrestigeListingDraft,
 } from "@/lib/prestigeSupabase";
 import { usePrestigeListings } from "@/lib/usePrestigeListings";
 import ImageCropFrame from "@/components/ImageCropFrame";
 
-const statuses = [
-  { value: "for-sale", label: "For Sale" },
-  { value: "pending", label: "Pending" },
-  { value: "sold", label: "Sold" },
-] as const;
+const statuses = PRESTIGE_STATUSES;
 
 export default function AdminListingsManager() {
   const { listings, setListings } = usePrestigeListings(true);
@@ -62,6 +60,16 @@ export default function AdminListingsManager() {
 
   function updateDraft(field: keyof PrestigeListingDraft, value: unknown) {
     setDraft((current) => ({ ...current, [field]: value }));
+  }
+
+  // Remove a photo from the draft. If it was the cover, promote the next
+  // remaining photo so the listing always has a valid cover.
+  function removePhoto(image: string) {
+    setDraft((current) => {
+      const gallery = (current.gallery || []).filter((g) => g !== image);
+      const nextImage = current.image === image ? gallery[0] || "" : current.image;
+      return { ...current, gallery, image: nextImage };
+    });
   }
 
   function openEditor(listing: PrestigeListingDraft) {
@@ -314,11 +322,7 @@ export default function AdminListingsManager() {
                   </div>
                   <div>
                     <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
-                      {listing.status === "for-sale"
-                        ? "For Sale"
-                        : listing.status === "sold"
-                          ? "Sold"
-                          : "Pending"}
+                      {prestigeStatusLabel(listing.status)}
                     </span>
                     <h2 className="mt-2 font-display text-2xl tracking-tight text-ink">
                       {listing.title}
@@ -405,16 +409,34 @@ export default function AdminListingsManager() {
                       .filter(Boolean)
                       .slice(0, 8)
                       .map((image, index) => (
-                        <button
-                          className={`relative aspect-[4/3] overflow-hidden border ${
+                        <div
+                          key={`${image}-${index}`}
+                          className={`group relative aspect-[4/3] overflow-hidden border ${
                             draft.image === image ? "border-gold" : "border-transparent"
                           }`}
-                          key={`${image}-${index}`}
-                          type="button"
-                          onClick={() => updateDraft("image", image)}
                         >
-                          <Image src={image} alt="" fill className="object-contain" />
-                        </button>
+                          <button
+                            type="button"
+                            className="absolute inset-0 h-full w-full"
+                            aria-label="Use as cover photo"
+                            onClick={() => updateDraft("image", image)}
+                          >
+                            <Image src={image} alt="" fill className="object-contain" />
+                          </button>
+                          {draft.image === image && (
+                            <span className="pointer-events-none absolute bottom-1 left-1 bg-gold px-2 py-0.5 font-body text-[9px] font-bold uppercase tracking-[0.15em] text-ink">
+                              Cover
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            aria-label="Remove photo"
+                            onClick={() => removePhoto(image)}
+                            className="absolute right-1 top-1 grid h-7 w-7 place-items-center rounded-full bg-ink/85 text-lg leading-none text-ivory shadow-lg transition-colors hover:bg-red-700"
+                          >
+                            ×
+                          </button>
+                        </div>
                       ))}
                   </div>
                 </section>

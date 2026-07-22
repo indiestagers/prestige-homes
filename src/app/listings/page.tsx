@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { usePrestigeListings } from "@/lib/usePrestigeListings";
 import { goToContactSection } from "@/lib/contactNavigation";
+import { PRESTIGE_STATUSES, prestigeStatusLabel } from "@/lib/prestigeSupabase";
 import { Bed, Bath, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 
 const fmt = (n: number) =>
@@ -14,9 +15,7 @@ const fmt = (n: number) =>
 
 const STATUSES = [
   { id: "all", label: "All" },
-  { id: "for-sale", label: "For Sale" },
-  { id: "pending", label: "Pending" },
-  { id: "sold", label: "Sold" },
+  ...PRESTIGE_STATUSES.map((s) => ({ id: s.value, label: s.label })),
 ] as const;
 
 const PRICES = [
@@ -260,11 +259,7 @@ function Card({
       <div className="relative aspect-[4/3] overflow-hidden mb-5 bg-cream">
         <ListingGallery images={images} title={l.title} />
         <div className="absolute top-4 left-4 px-3 py-1.5 bg-ivory/95 backdrop-blur font-body text-[10px] tracking-[0.2em] uppercase text-ink">
-          {l.status === "for-sale"
-            ? "For Sale"
-            : l.status === "sold"
-              ? "Sold"
-              : "Pending"}
+          {prestigeStatusLabel(l.status)}
         </div>
         <div className="absolute bottom-4 right-4 px-4 py-2 bg-ink text-ivory font-display text-base sm:text-lg">
           {fmt(l.price)}

@@ -7,6 +7,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { usePrestigeListings } from "@/lib/usePrestigeListings";
+import { prestigeStatusLabel } from "@/lib/prestigeSupabase";
 import { goToContactSection } from "@/lib/contactNavigation";
 import { Bed, Bath, Maximize2 } from "lucide-react";
 
@@ -119,11 +120,7 @@ export default function PropertyShowcase3D() {
                   className="absolute top-4 left-4 px-3 py-1.5 bg-ivory/95 backdrop-blur font-body text-[10px] tracking-[0.2em] uppercase text-ink"
                   style={{ transform: "translateZ(60px)" }}
                 >
-                  {l.status === "for-sale"
-                    ? "For Sale"
-                    : l.status === "sold"
-                      ? "Sold"
-                      : "Pending"}
+                  {prestigeStatusLabel(l.status)}
                 </div>
                 <div
                   className="absolute bottom-4 right-4 px-4 py-2 bg-gold text-ink font-display text-base sm:text-lg shadow-xl"
@@ -157,7 +154,11 @@ export default function PropertyShowcase3D() {
                   }}
                 />
               </div>
-              <div style={{ transform: "translateZ(40px)" }}>
+              {/* No translateZ here: in the 3D perspective a raised Z-plane
+                  shifts horizontally, pushing the title out of line with the
+                  image. Keeping the text at z=0 aligns its left edge with the
+                  image's left edge. */}
+              <div>
                 <h3 className="font-display text-xl sm:text-2xl tracking-tight">
                   <span className="transition-colors duration-300 group-hover:text-gold">
                     {l.title}

@@ -1,4 +1,4 @@
-export type ListingStatus = "for-sale" | "pending" | "sold";
+export type ListingStatus = "for-sale" | "for-rent" | "coming-soon" | "sold";
 
 export type Listing = {
   id: string;

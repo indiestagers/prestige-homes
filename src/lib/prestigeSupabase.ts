@@ -1,6 +1,24 @@
 import { createClient } from "@supabase/supabase-js";
 
-export type PrestigeListingStatus = "for-sale" | "pending" | "sold";
+export type PrestigeListingStatus = "for-sale" | "for-rent" | "coming-soon" | "sold";
+
+// Single source of truth for status options + their display labels.
+export const PRESTIGE_STATUSES: { value: PrestigeListingStatus; label: string }[] = [
+  { value: "for-sale", label: "For Sale" },
+  { value: "for-rent", label: "For Rent" },
+  { value: "coming-soon", label: "Coming Soon" },
+  { value: "sold", label: "Sold" },
+];
+
+export function prestigeStatusLabel(status: string): string {
+  const match = PRESTIGE_STATUSES.find((s) => s.value === status);
+  if (match) return match.label;
+  // Graceful fallback for any legacy value (e.g. an old "pending").
+  return status
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
 
 export type PrestigeListingDraft = {
   id: string;
