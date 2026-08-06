@@ -144,9 +144,9 @@ export default function CinematicHero() {
           className="mt-14 flex flex-wrap gap-x-12 gap-y-6 max-w-xl"
         >
           {[
-            { num: "$50M+", label: "Sold" },
-            { num: "200+", label: "Families" },
-            { num: "15+", label: "Years" },
+            { num: "$240M+", label: "Sold" },
+            { num: "900+", label: "Families" },
+            { num: "30+", label: "Years" },
           ].map((s) => (
             <div key={s.label}>
               <div className="font-display text-2xl text-ivory">{s.num}</div>

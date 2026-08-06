@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import StatCounter from "./StatCounter";
 
 const stats: { value: number; prefix?: string; suffix?: string; label: string }[] = [
-  { value: 50, prefix: "$", suffix: "M+", label: "Lifetime Sales Volume" },
-  { value: 200, suffix: "+", label: "Families Served" },
-  { value: 15, suffix: "+", label: "Years Experience" },
+  { value: 240, prefix: "$", suffix: "M+", label: "Lifetime Sales Volume" },
+  { value: 900, suffix: "+", label: "Families Served" },
+  { value: 30, suffix: "+", label: "Years Experience" },
   { value: 98, suffix: "%", label: "Client Satisfaction" },
 ];
 
